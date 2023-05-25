@@ -57,6 +57,7 @@ class SigSciApi(object):
             cookies = self.cookies
 
         url = self.base_url + self.api_version + endpoint
+        print(url)
 
         result = None
         if method == "GET":
@@ -200,14 +201,14 @@ class SigSciApi(object):
             method="PATCH")
 
     # CORP RULES
-    def get_corp_rules(self):
+    def get_corp_rules(self, page=1):
         """
         List rules in corp
         https://docs.signalsciences.net/api/#_corps__corpName__rules_get
         GET /corps/{corpName}/rules
         """
         return self._make_request(
-            endpoint="{}/{}/rules".format(self.ep_corps, self.corp))
+            endpoint="{}/{}/rules?page={}".format(self.ep_corps, self.corp, page))
 
     def add_corp_rule(self, data):
         """
@@ -651,21 +652,21 @@ class SigSciApi(object):
         """
         return self.get_site_rules()
 
-    def get_site_rules(self, rule_type=""):
+    def get_site_rules(self, rule_type="", page=1):
         """
         List rules in site
         https://docs.signalsciences.net/api/#_corps__corpName__sites__siteName__rules_get
         GET /corps/{corpName}/sites/{siteName}/rules
         """
-        type_parameter = ""
+        parameter = "?page={}".format(page)
         if rule_type in ['request', 'signal', 'rateLimit']:
-            type_parameter = "?type={}".format(rule_type)
+            parameter += "&type={}".format(rule_type)
 
         return self._make_request(
             endpoint="{}/{}/sites/{}/rules{}".format(self.ep_corps,
                                                      self.corp,
                                                      self.site,
-                                                     type_parameter))
+                                                     parameter))
 
     def add_request_rules(self, data):
         """
